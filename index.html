@@ -1,0 +1,471 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detektif Matematika</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #101827;
+  color: white;
+}
+
+header {
+  background: #18263a;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 3px solid #e5b84b;
+}
+
+header h1 {
+  color: #f5c85b;
+  margin: 5px;
+}
+
+header p {
+  color: #bdc9d8;
+}
+
+.container {
+  max-width: 850px;
+  margin: 30px auto;
+  padding: 15px;
+}
+
+.card {
+  background: #1c2b40;
+  padding: 25px;
+  border-radius: 18px;
+  border: 1px solid #35465d;
+  margin-bottom: 20px;
+}
+
+.hero {
+  text-align: center;
+  padding: 35px 20px;
+}
+
+.detective {
+  font-size: 75px;
+}
+
+h2 {
+  color: #f5c85b;
+}
+
+button {
+  background: #e5b84b;
+  color: #182033;
+  border: none;
+  padding: 13px 22px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 7px;
+  font-size: 15px;
+}
+
+button:hover {
+  background: #ffda75;
+  transform: translateY(-2px);
+}
+
+.option {
+  display: block;
+  width: 100%;
+  background: #2b3d56;
+  color: white;
+  border: 1px solid #52657f;
+  text-align: left;
+  margin: 10px 0;
+}
+
+.option:hover {
+  background: #3d526e;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  background: #293b54;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  flex: 1;
+  min-width: 100px;
+}
+
+.stat strong {
+  display: block;
+  color: #f5c85b;
+  font-size: 23px;
+  margin-top: 5px;
+}
+
+.story {
+  line-height: 1.7;
+  color: #d5dfeb;
+}
+
+.question {
+  font-size: 21px;
+  line-height: 1.6;
+  margin: 20px 0;
+}
+
+#feedback {
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 15px;
+  line-height: 1.5;
+}
+
+.hidden {
+  display: none;
+}
+
+.clue {
+  background: #35445b;
+  border-left: 4px solid #e5b84b;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+footer {
+  text-align: center;
+  color: #8999ae;
+  padding: 25px;
+  font-size: 13px;
+}
+
+@media(max-width:600px) {
+  .container {
+    margin: 15px auto;
+  }
+
+  .question {
+    font-size: 18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🔎 DETEKTIF MATEMATIKA</h1>
+  <p>Berpikir Logis, Pecahkan Misteri!</p>
+</header>
+
+<div class="container">
+
+<!-- HALAMAN AWAL -->
+<div class="card hero" id="home">
+  <div class="detective">🕵️</div>
+  <h2>Selamat Datang, Detektif!</h2>
+
+  <p class="story">
+    Sebuah misteri terjadi di Kota Angka.
+    Sebuah dokumen penting menghilang dari ruang matematika.
+    Ada 5 petunjuk yang harus kamu pecahkan.
+    Gunakan kemampuan matematikamu untuk menemukan pelakunya!
+  </p>
+
+  <h3 style="color:#f5c85b">
+    Apakah kamu siap menjalankan misi?
+  </h3>
+
+  <button onclick="startGame()">MULAI PENYELIDIKAN 🔍</button>
+</div>
+
+<!-- HALAMAN PERMAINAN -->
+<div id="game" class="hidden">
+
+  <div class="card stats">
+    <div class="stat">
+      LEVEL
+      <strong id="level">1/5</strong>
+    </div>
+
+    <div class="stat">
+      SKOR
+      <strong id="score">0</strong>
+    </div>
+
+    <div class="stat">
+      NYAWA
+      <strong id="life">❤️❤️❤️</strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 id="caseTitle">📁 Kasus 1</h2>
+
+    <p class="story" id="story"></p>
+
+    <div class="clue">
+      <b>🔐 Petunjuk Misteri:</b>
+      <p id="clue"></p>
+    </div>
+
+    <h2>🧠 Pecahkan Soal!</h2>
+
+    <div class="question" id="question"></div>
+
+    <div id="options"></div>
+
+    <div id="feedback"></div>
+
+    <button id="nextBtn" class="hidden"
+      onclick="nextQuestion()">Lanjutkan Misi ➜</button>
+
+    <button id="hintBtn" onclick="showHint()">
+      💡 Lihat Bantuan
+    </button>
+
+    <p id="hint" class="hidden"></p>
+  </div>
+</div>
+
+<!-- HALAMAN SELESAI -->
+<div id="result" class="card hero hidden">
+  <div class="detective">🏆</div>
+  <h2>Penyelidikan Selesai!</h2>
+
+  <h3 id="finalTitle"></h3>
+
+  <p id="finalText" class="story"></p>
+
+  <div class="clue">
+    <h2>📜 Hasil Penyelidikan</h2>
+    <p id="finalScore"></p>
+    <p><b>Pelaku:</b> Bima, petugas ruang matematika.</p>
+    <p>
+      Bima menyimpan dokumen tersebut di lemari arsip.
+      Semua petunjuk berhasil mengarahkan detektif ke tempat itu!
+    </p>
+  </div>
+
+  <button onclick="restartGame()">Main Lagi 🔄</button>
+</div>
+
+</div>
+
+<footer>
+  DETEKTIF MATEMATIKA | Media Pembelajaran Interaktif
+</footer>
+
+<script>
+
+const questions = [
+{
+ title:"Kasus 1: Kode Ruangan",
+ story:"Kamu menemukan catatan angka di dekat pintu ruang matematika.",
+ clue:"Kode pintu merupakan hasil perkalian dua bilangan.",
+ question:"Berapakah hasil dari 8 × 7?",
+ options:["54","56","64","48"],
+ answer:1,
+ hint:"Kalikan 8 sebanyak 7 kali."
+},
+{
+ title:"Kasus 2: Catatan Rahasia",
+ story:"Di atas meja terdapat catatan yang berisi sebuah persamaan.",
+ clue:"Nilai x adalah angka yang tersembunyi.",
+ question:"Jika x + 15 = 30, berapakah nilai x?",
+ options:["10","12","15","20"],
+ answer:2,
+ hint:"Pindahkan 15 ke ruas kanan dengan operasi pengurangan."
+},
+{
+ title:"Kasus 3: Jejak Geometri",
+ story:"Kamu menemukan gambar segitiga di dalam buku catatan.",
+ clue:"Segitiga memiliki tiga sudut.",
+ question:"Jumlah seluruh sudut dalam segitiga adalah ...",
+ options:["90°","180°","270°","360°"],
+ answer:1,
+ hint:"Jumlah sudut dalam segitiga selalu sama."
+},
+{
+ title:"Kasus 4: Brankas Misterius",
+ story:"Ada sebuah brankas dengan kode berbentuk bilangan kuadrat.",
+ clue:"Cari hasil dari bilangan yang dikalikan dengan dirinya sendiri.",
+ question:"Berapakah hasil dari 9²?",
+ options:["18","72","81","99"],
+ answer:2,
+ hint:"9² artinya 9 × 9."
+},
+{
+ title:"Kasus 5: Petunjuk Terakhir",
+ story:"Kamu menemukan petunjuk terakhir berupa pola bilangan.",
+ clue:"Perhatikan perubahan dari satu angka ke angka berikutnya.",
+ question:"Tentukan angka berikutnya: 2, 4, 8, 16, ...",
+ options:["20","24","30","32"],
+ answer:3,
+ hint:"Setiap angka dikalikan 2."
+}
+];
+
+let current = 0;
+let score = 0;
+let life = 3;
+let answered = false;
+
+function startGame() {
+  current = 0;
+  score = 0;
+  life = 3;
+
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+
+  const q = questions[current];
+
+  document.getElementById("level").textContent =
+    (current+1)+"/5";
+
+  document.getElementById("score").textContent = score;
+
+  document.getElementById("life").textContent =
+    "❤️".repeat(life) + "🖤".repeat(3-life);
+
+  document.getElementById("caseTitle").textContent = q.title;
+  document.getElementById("story").textContent = q.story;
+  document.getElementById("clue").textContent = q.clue;
+  document.getElementById("question").textContent = q.question;
+
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("hint").classList.add("hidden");
+  document.getElementById("hint").textContent = "";
+  document.getElementById("hintBtn").classList.remove("hidden");
+  document.getElementById("nextBtn").classList.add("hidden");
+
+  const options = document.getElementById("options");
+  options.innerHTML = "";
+
+  q.options.forEach((option,index) => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent =
+      String.fromCharCode(65+index)+". "+option;
+
+    btn.onclick = () => checkAnswer(index,btn);
+
+    options.appendChild(btn);
+  });
+}
+
+function checkAnswer(index,btn) {
+  if(answered) return;
+
+  answered = true;
+
+  const q = questions[current];
+  const feedback = document.getElementById("feedback");
+  const buttons = document.querySelectorAll(".option");
+
+  buttons.forEach(b => b.disabled = true);
+
+  if(index === q.answer) {
+    score += 20;
+
+    feedback.textContent =
+      "✅ Benar! Kamu berhasil menemukan satu petunjuk misteri. +20 poin";
+
+    feedback.style.background = "#23543d";
+  } else {
+    life--;
+
+    feedback.textContent =
+      "❌ Belum tepat! Jawaban yang benar adalah " +
+      q.options[q.answer] + ".";
+
+    feedback.style.background = "#63343b";
+  }
+
+  document.getElementById("score").textContent = score;
+
+  document.getElementById("life").textContent =
+    "❤️".repeat(life) + "🖤".repeat(3-life);
+
+  document.getElementById("nextBtn").classList.remove("hidden");
+  document.getElementById("hintBtn").classList.add("hidden");
+
+  if(life === 0) {
+    document.getElementById("nextBtn").textContent =
+      "Lihat Hasil";
+  }
+}
+
+function showHint() {
+  const hint = document.getElementById("hint");
+  hint.textContent = "💡 Bantuan: " + questions[current].hint;
+  hint.classList.remove("hidden");
+}
+
+function nextQuestion() {
+  if(life === 0) {
+    showResult(false);
+    return;
+  }
+
+  current++;
+
+  if(current >= questions.length) {
+    showResult(true);
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult(won) {
+  document.getElementById("game").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  if(won) {
+    document.getElementById("finalTitle").textContent =
+      "🎉 Kasus Berhasil Dipecahkan!";
+    document.getElementById("finalText").textContent =
+      "Hebat! Kamu berhasil menyelesaikan seluruh tantangan dan mengungkap misteri Kota Angka.";
+  } else {
+    document.getElementById("finalTitle").textContent =
+      "Penyelidikan Terhenti!";
+    document.getElementById("finalText").textContent =
+      "Nyawamu habis sebelum seluruh petunjuk ditemukan. Coba lagi dan pecahkan misterinya!";
+  }
+
+  document.getElementById("finalScore").textContent =
+    "Skor akhir: "+score+" dari 100 poin.";
+}
+
+function restartGame() {
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("home").classList.remove("hidden");
+  document.getElementById("nextBtn").textContent =
+    "Lanjutkan Misi ➜";
+}
+
+</script>
+
+</body>
+</html>
